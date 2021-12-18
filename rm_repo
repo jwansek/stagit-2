@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo -n "Input repo name to delete: "
+read repo
+
+rm -fv ~/$repo
+rm -fv ~/$repo.git
+rm -rfv ~/git/$repo.git
+rm -rfv ~/git/html/$repo
+python3 remake_index.py
