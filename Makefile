@@ -54,7 +54,7 @@ dist:
 	mkdir -p ${NAME}-${VERSION}
 	cp -f ${MAN1} ${HDR} ${SRC} ${COMPATSRC} ${DOC} \
 		Makefile favicon.png logo.png style.css \
-		create.sh post-receive.sh \
+		make_repo.py remake_index.py \
 		${NAME}-${VERSION}
 	# make tarball
 	tar -cf - ${NAME}-${VERSION} | \
@@ -82,8 +82,8 @@ install: all
 	cp -f style.css\
 		favicon.png\
 		logo.png\
-		create.sh\
-		post-receive.sh\
+		make_repo.py\
+		remake_index.py\
 		README.md\
 		${DESTDIR}${DOCPREFIX}
 	# installing manual pages.
@@ -99,8 +99,8 @@ uninstall:
 		${DESTDIR}${DOCPREFIX}/style.css\
 		${DESTDIR}${DOCPREFIX}/favicon.png\
 		${DESTDIR}${DOCPREFIX}/logo.png\
-		${DESTDIR}${DOCPREFIX}/create.sh\
-		${DESTDIR}${DOCPREFIX}/post-receive.sh\
+		${DESTDIR}${DOCPREFIX}/make_repo.py\
+		${DESTDIR}${DOCPREFIX}/remake_index.py\
 		${DESTDIR}${DOCPREFIX}/README.md
 	-rmdir ${DESTDIR}${DOCPREFIX}
 	# removing manual pages.
