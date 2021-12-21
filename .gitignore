@@ -1,3 +1,5 @@
 *.o
 stagit
 stagit-index
+__pycache__/
+
