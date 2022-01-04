@@ -1,4 +1,5 @@
 import subprocess
+import tempfile
 import shutil
 import os
 
@@ -19,30 +20,36 @@ description = input("Input repository description: ")
 with open(os.path.join(repo_path, "description"), "w") as f:
     f.write(description)
 
-with open("README.md", "w") as f:
-    f.write("# %s\n\n%s\n" % (repo_name, description))
-
-gitignore_templates_dir = "/home/eden/gitignore/"
-templates = sorted([f[:-10] for f in os.listdir(gitignore_templates_dir) if f.endswith(".gitignore")])
-templates.append("[None]")
-for i, template in enumerate(templates, 0):
-    print("%3d: %-23s" % (i, template), end = "")
-    if i % 4 == 0:
-        print("")
-
-selected_index = int(input("\nSelect .gitignore template: "))
-if selected_index != len(templates) - 1:
-    shutil.copy(os.path.join(gitignore_templates_dir, templates[selected_index]) + ".gitignore", ".gitignore", follow_symlinks = True)
-
-subprocess.run(["git", "add", "."])
-subprocess.run(["git", "commit", "-m", "initialized repository"])
-
 author = input("Input repository author: ")
 with open(os.path.join(repo_path, "author"), "w") as f:
     f.write(author)
 
 with open(os.path.join(repo_path, "url"), "w") as f:
     f.write("git@eda.gay:" + repo_name)
+
+accessstr = "git@git.eda.gay:" + str(repo_path)
+with tempfile.TemporaryDirectory() as tempdir:
+    subprocess.run(["git", "clone", accessstr, tempdir])
+    os.chdir(tempdir)
+   
+    with open("README.md", "w") as f:
+        f.write("# %s\n\n%s\n" % (repo_name, description))
+
+    gitignore_templates_dir = "/home/eden/gitignore/"
+    templates = sorted([f[:-10] for f in os.listdir(gitignore_templates_dir) if f.endswith(".gitignore")])
+    templates.append("[None]")
+    for i, template in enumerate(templates, 0):
+        print("%3d: %-23s" % (i, template), end = "")
+        if i % 4 == 0:
+            print("")
+
+    selected_index = int(input("\nSelect .gitignore template: "))
+    if selected_index != len(templates) - 1:
+        shutil.copy(os.path.join(gitignore_templates_dir, templates[selected_index]) + ".gitignore", ".gitignore", follow_symlinks = True)
+
+    subprocess.run(["git", "add", "-A"])
+    subprocess.run(["git", "commit", "-m", "initialized repository"])
+    subprocess.run(["git", "push", "origin", "master"])
 
 # user input in an executed string? YIKES
 #   to run this you have to have ssh access anyway soo....
@@ -57,8 +64,6 @@ with open(os.path.join(repo_path, "hooks", "post-receive"), "w") as f:
 os.chdir(cwd)
 
 import remake_index
-
-accessstr = "git@git.eda.gay:" + str(repo_path)
 
 subprocess.run(["ln", "-s", repo_path, repo_name])
 subprocess.run(["ln", "-s", repo_path, repo_name + ".git"])
