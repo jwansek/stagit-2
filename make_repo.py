@@ -40,7 +40,7 @@ with tempfile.TemporaryDirectory() as tempdir:
     templates.append("[None]")
     for i, template in enumerate(templates, 0):
         print("%3d: %-23s" % (i, template), end = "")
-        if i % 4 == 0:
+        if i+1 % 4 == 0:
             print("")
 
     selected_index = int(input("\nSelect .gitignore template: "))
@@ -48,7 +48,7 @@ with tempfile.TemporaryDirectory() as tempdir:
         shutil.copy(os.path.join(gitignore_templates_dir, templates[selected_index]) + ".gitignore", ".gitignore", follow_symlinks = True)
 
     subprocess.run(["git", "add", "-A"])
-    subprocess.run(["git", "commit", "-m", "initialized repository"])
+    subprocess.run(["git", "commit", "-m", "Initialized repository"])
     subprocess.run(["git", "push", "origin", "master"])
 
 # user input in an executed string? YIKES
