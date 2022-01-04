@@ -39,6 +39,38 @@ Dependencies
 - POSIX make (optional).
 - [md4c](https://github.com/mity/md4c) (v0.4.4+).
 
+Other required setup for my configuration
+-----------------------------------------
+My configuration uses `192.168.1.92` to run stagit, which is not the same as
+the system used as the ssh server and git server. This is because my git server
+cannot run stagit. If you don't need this, you can configure it to ssh into itself.
+You need to setup ssh keys such that it can ssh into itself anyway for the repository
+initialization.
+
+You also need a working version of python 3 on the PATH of the ssh/git server.
+
+Example nginx configuration
+---------------------------
+
+	server {
+		server_name git.eda.gay;
+
+		access_log /home/git/access.log;
+		error_log  /home/git/error.log;
+
+		root /media/git/html;
+		index index.html;
+
+		location / {
+			try_files $uri $uri/ =404;
+		}
+
+		listen 443 ssl; # managed by Certbot
+		ssl_certificate /etc/letsencrypt/live/git.eda.gay/fullchain.pem; # managed by Certbot
+		ssl_certificate_key /etc/letsencrypt/live/git.eda.gay/privkey.pem; # managed by Certbot
+		include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+		ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+	}
 
 Documentation
 -------------
