@@ -48,6 +48,18 @@ if input("Would you like the repository to remain bare? Useful for making mirror
         if selected_index != 0:
             shutil.copy(os.path.join(gitignore_templates_dir, templates[selected_index - 1]) + ".gitignore", ".gitignore", follow_symlinks = True)
 
+        licenses_templates_dir = "/home/eden/license-templates/templates/"
+        templates = sorted([f[:-4] for f in os.listdir(licenses_templates_dir) if not f.endswith("-header.txt")])
+        templates.insert(0, "[None]")
+        for i, template in enumerate(templates, 1):
+            print("%2d: %-21s" % (i, template), end = "")
+            if i % 4 == 0:
+                print("")
+        
+        selected_index = int(input("\nSelect license template: "))
+        if selected_index != 0:
+            shutil.copy(os.path.join(gitignore_templates_dir, templates[selected_index - 1]) + ".txt", "LICENSE", follow_symlinks = True)
+
         subprocess.run(["git", "add", "-A"])
         subprocess.run(["git", "commit", "-m", "Initialized repository"])
         subprocess.run(["git", "push", "origin", "master"])
