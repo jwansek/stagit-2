@@ -60,7 +60,7 @@ if input("Would you like the repository to remain bare? Useful for making mirror
         
         selected_index = int(input("\nSelect license template: "))
         if selected_index != 0:
-            with open(os.path.join(licenses_templates_dir, templates[selected_index - 1]) + ".txt", "rb") as f:
+            with open(os.path.join(licenses_templates_dir, templates[selected_index - 1]) + ".txt", "r") as f:
                 jinja_template = jinja2.Template(f.read())
 
             with open("LICENSE", "w") as f:
