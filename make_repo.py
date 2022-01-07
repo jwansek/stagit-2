@@ -3,7 +3,7 @@ import tempfile
 import shutil
 import os
 
-repo_name = input("Input repository name: ")
+repo_name = input("Input repository name: ").replace(" ", "_")
 repo_path = os.path.join("/", "srv", "git", repo_name + ".git")
 
 if os.path.exists(repo_path):
