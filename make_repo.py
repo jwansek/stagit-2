@@ -1,6 +1,8 @@
 import subprocess
+import datetime
 import tempfile
 import shutil
+import jinja2
 import os
 
 repo_name = input("Input repository name: ").replace(" ", "_")
@@ -58,7 +60,15 @@ if input("Would you like the repository to remain bare? Useful for making mirror
         
         selected_index = int(input("\nSelect license template: "))
         if selected_index != 0:
-            shutil.copy(os.path.join(licenses_templates_dir, templates[selected_index - 1]) + ".txt", "LICENSE", follow_symlinks = True)
+            with open(os.path.join(licenses_templates_dir, templates[selected_index - 1]) + ".txt", "rb") as f:
+                jinja_template = jinja2.Template(f.read())
+
+            with open("LICENSE", "w") as f:
+                f.write(jinja_template.render(**{
+                    "year": str(datetime.datetime.today().year),
+                    "organization": author,
+                    "project": repo_name
+                }))
 
         subprocess.run(["git", "add", "-A"])
         subprocess.run(["git", "commit", "-m", "Initialized repository"])
