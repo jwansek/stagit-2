@@ -29,6 +29,8 @@ with open(os.path.join(repo_path, "author"), "w") as f:
 with open(os.path.join(repo_path, "url"), "w") as f:
     f.write("git@eda.gay:" + repo_name)
 
+private = input("Would you like the repository to appear on the web version git.eda.gay? <y/n>: ").lower() == "n"
+
 accessstr = "git@git.eda.gay:" + str(repo_path)
 if input("Would you like the repository to remain bare? Useful for making mirrors of Github repos. <y/n>: ").lower() != "y": 
     with tempfile.TemporaryDirectory() as tempdir:
@@ -77,12 +79,16 @@ if input("Would you like the repository to remain bare? Useful for making mirror
 # user input in an executed string? YIKES
 #   to run this you have to have ssh access anyway soo....
 #       still bad form though tbh
-subprocess.run(["ssh", "git@192.168.1.92", "cd /media/git/html/ && mkdir %s && cd %s && stagit ../../%s.git/" % (repo_name, repo_name, repo_name)])
+if not private:
+    subprocess.run(["ssh", "git@192.168.1.92", "cd /media/git/html/ && mkdir %s && cd %s && stagit ../../%s.git/" % (repo_name, repo_name, repo_name)])
 
-with open(os.path.join(repo_path, "hooks", "post-receive"), "w") as f:
-    f.write("#!/bin/sh\n\n")
-    f.write("ssh git@192.168.1.92 'cd /media/git/html/%s && stagit ../../%s.git/'\n" % (repo_name, repo_name))
-    f.write("python3 /home/git/remake_index.py\n") 
+    with open(os.path.join(repo_path, "hooks", "post-receive"), "w") as f:
+        f.write("#!/bin/sh\n\n")
+        f.write("ssh git@192.168.1.92 'cd /media/git/html/%s && stagit ../../%s.git/'\n" % (repo_name, repo_name))
+        f.write("python3 /home/git/remake_index.py\n") 
+else:
+    with open("/home/git/git/private_repos.txt", "a") as f:
+        f.write("%s.git\n" % repo_name)
 
 os.chdir(cwd)
 
