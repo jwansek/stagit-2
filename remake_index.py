@@ -7,8 +7,6 @@ remote_git = os.path.join("/", "media", "git")
 with open(os.path.join(initdir, "private_repos.txt"), "r") as f:
     private_repos = f.read().split("\n")
 
-print(private_repos)
-
 dirs = []
 for dir_ in os.listdir(initdir):
     full_dir = os.path.join(initdir, dir_)
