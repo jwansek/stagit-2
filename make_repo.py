@@ -1,4 +1,5 @@
 import subprocess
+import configparser
 import datetime
 import tempfile
 import shutil
@@ -97,9 +98,14 @@ import remake_index
 subprocess.run(["ln", "-s", repo_path, repo_name])
 subprocess.run(["ln", "-s", repo_path, repo_name + ".git"])
 
+gitconf = configparser.ConfigParser()
+gitconf.read("/srv/git/github.conf")
+
 print("""
 Repository created. You can now clone or add remote:
     git remote add other %s
                          %s
     git clone %s
-    """ % (accessstr, "git@eda.gay:" + repo_name, accessstr))
+And add github mirror (insecure method, keys are stored locally):
+    git remote add github https://%s:%s@github.com/%s/%s
+    """ % (accessstr, "git@eda.gay:" + repo_name, accessstr, gitconf.get("github", "user"), gitconf.get("github", "key"), gitconf.get("github", "user"),repo_name ))
